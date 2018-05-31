@@ -1,0 +1,5 @@
+新增任务URL
+http://127.0.0.1:8080/addTask?jobName=UserVisitCountJob1&jobGroupName=UserVisitCountJobGroup1&triggerName=simpleTrigger1&triggerGroupName=triggerGroup1
+
+删除任务URL
+http://127.0.0.1:8080/removeTask?jobName=UserVisitCountJob1&jobGroupName=UserVisitCountJobGroup1&triggerName=simpleTrigger1&triggerGroupName=triggerGroup1
