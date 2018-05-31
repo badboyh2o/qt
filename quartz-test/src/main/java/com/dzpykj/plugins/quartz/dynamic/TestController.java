@@ -1,19 +1,7 @@
 package com.dzpykj.plugins.quartz.dynamic;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,29 +9,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping
 public class TestController {
-	
-	@RequestMapping("/test")
+
+	@Autowired
+	protected JdbcTemplate jdbcTemplate;// jdbc模版类
+
+	@RequestMapping("/addTask")
 	@ResponseBody
-	public String test(){
-    	try {
-    		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    		SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-    		Scheduler scheduler = schedulerFactory.getScheduler();
-    		
-    		JobDetail jobDetail = newJob(UserVisitCountQuartzJob.class)
-    				//.withIdentity("UserVisitCountJob", "UserVisitCountJobGroup")
-    				.build();
-    		CronTrigger simpleTrigger = newTrigger()
-    				//.withIdentity("simpleTrigger2", "triggerGroup2")
-    				.withSchedule(cronSchedule("0/1 * * * * ?")) //每隔一秒执行一次
-    				.startNow()
-    				.build();
-    		Date ft = scheduler.scheduleJob(jobDetail, simpleTrigger);
-    		System.err.println("++++++++++++++");
-    		scheduler.start();
-    	} catch (SchedulerException e) {
-    		e.printStackTrace();
-    	}
-		return null;
+	public String addTask(String jobName, String jobGroupName, String triggerName, String triggerGroupName) {
+		String cronExp = "0/5 * * * * ?";// 每隔5秒执行一次
+		Class jobClass = UserVisitCountQuartzJob.class;
+		String result = QuartzTaskUtils.addTask(jobName, jobGroupName, triggerName, triggerGroupName, cronExp, jobClass,
+				jdbcTemplate);
+		return result;
 	}
+
+	@RequestMapping("/removeTask")
+	@ResponseBody
+	public String removeJob(String jobName, String jobGroupName, String triggerName, String triggerGroupName) {
+		String result = QuartzTaskUtils.removeJob(jobName, jobGroupName, triggerName, triggerGroupName, jdbcTemplate);
+		return result;
+	}
+
 }

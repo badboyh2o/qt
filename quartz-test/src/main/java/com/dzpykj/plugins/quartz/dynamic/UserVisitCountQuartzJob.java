@@ -1,5 +1,8 @@
 package com.dzpykj.plugins.quartz.dynamic;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -12,7 +15,7 @@ public class UserVisitCountQuartzJob implements Job {
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-			System.err.println("---------------");
+			System.err.println(new SimpleDateFormat("YYYY-MM-dd-HH:mm:ss").format(new Date()));
 		} catch (Exception e) {
 		}
 	}
